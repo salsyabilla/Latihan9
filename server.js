@@ -1,20 +1,31 @@
+require('dotenv').config();
 const express = require('express');
+
 const app = express();
-const PORT = 8001;
+const port = process.env.PORT || 3000;
 
+// built-in body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//Routes
-const userRoutes = require('./routes/user.routes');
-app.use('/api/users', userRoutes);
+// routes
+const productRoutes = require('./routes/products.routes');
+const authRoutes = require('./routes/auth.routes'); // ← TAMBAHKAN INI
 
-const productsRoutes = require('./routes/products.routes');
-app.use('/api/products', productsRoutes);
-
+app.use('/products', productRoutes);
+app.use('/', authRoutes); // ← TAMBAHKAN INI (atau '/api' atau '/auth' sesuai kebutuhan)
+ 
+// basic root
 app.get('/', (req, res) => {
-  res.send('Hello, World');
+  res.send({ message: 'API running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+// error handler (fallback)
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send({ error: 'Internal Server Error' });
+});
+
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });

@@ -6,16 +6,16 @@ const {
   getById,
   create,
   update,
-  delete: deleteProduct, // karena "delete" reserved word di JS
+  delete: deleteProduct, // alias untuk delete
 } = require('../controllers/products.controller');
 
-const { authBearer } = require('../middleware/auth.middleware.js');
+const { authBearer } = require('../middleware/auth.middleware');
 
 // Bebas akses
 router.get('/', getAll);
 router.get('/:id', getById);
 
-// Perlu Token
+// Perlu Token (middleware sederhana)
 router.post('/', authBearer, create);
 router.put('/:id', authBearer, update);
 router.delete('/:id', authBearer, deleteProduct);
